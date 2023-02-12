@@ -1,0 +1,30 @@
+.form {
+    background-color: blueviolet;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+  
+  .form_btn {
+    color: aliceblue;
+    width: 60px;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 5px;
+    background-color: rgb(108, 24, 226);
+  }
+  .form_btn:hover {
+    background-color: rgb(239, 147, 147);
+  }
+  
+  .form_input {
+    padding-left: 10px;
+    width: 200px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(207, 183, 242);
+    margin-right: 10px;
+  }
