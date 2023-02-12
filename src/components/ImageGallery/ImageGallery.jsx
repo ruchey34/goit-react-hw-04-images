@@ -1,7 +1,8 @@
-import ImageGalleryItem from 'components/ImageGalleryItem';
+import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import s from './ImageGallery.module.css';
+import PropTypes from 'prop-types';
 
-const ImageGallery = ({ items, openModal, ...otherProps }) => {
+const ImageGallery = ({ items, ...otherProps }) => {
   return (
     items && (
       <ul className={s.galleryList}>
@@ -17,5 +18,8 @@ const ImageGallery = ({ items, openModal, ...otherProps }) => {
     )
   );
 };
-
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  items: PropTypes.array,
+};

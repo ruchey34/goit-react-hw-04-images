@@ -1,4 +1,5 @@
 import s from './Button.module.css';
+import PropTypes from 'prop-types';
 
 const Button = ({ handleButtonClick }) => {
   return (
@@ -15,3 +16,7 @@ const Button = ({ handleButtonClick }) => {
 };
 
 export default Button;
+
+Button.propTypes = {
+  handleButtonClick: PropTypes.func.isRequired,
+};

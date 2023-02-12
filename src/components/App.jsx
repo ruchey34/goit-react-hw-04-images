@@ -1,66 +1,58 @@
-import Searchbar from './Searchbar/Searchbar';
-import { Component } from 'react';
-import { fetchImg } from './service/api';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import axios from 'axios';
+import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
-import Button from './Button/Button';
 import Loader from './Loader';
+import Button from './Button';
 
+const API_KEY = '31254208-ff4dd95c44a4a79ef6d4abce7';
+axios.defaults.baseURL = `https://pixabay.com/api/`;
 
-export class App extends Component {
-  state = {
-    search: '',
-    page: 1,
-    allImages: [],
-    isLoading: false,
-  };
+export const App = () => {
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [allImages, setAllImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const isAllImages = allImages.length;
 
-  async componentDidUpdate(_, prevState) {
-    const { page, search } = this.state;
-
-    if (prevState.page !== page) {
-      try {
-        if (prevState.page !== page) {
-          this.setState({ isLoading: true });
-          const res = await fetchImg(search, page);
-          this.setState(prevState => ({
-            allImages: [...prevState.allImages, ...res.hits],
-          }));
-        }
-      } catch (error) {
-        alert(error.message);
-      } finally {
-        this.setState({ isLoading: false });
-      }
+  useEffect(() => {
+    if (!search) {
+      return;
     }
-  }
-  handleSubmit = (e, value) => {
+    const fetchImg = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `?q=${search}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+        );
+        setAllImages(prevState => [...prevState, ...response.data.hits]);
+      } catch {
+        alert(`Error`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchImg();
+  }, [search, page]);
+
+  const handleSubmit = (e, value) => {
     e.preventDefault();
-
-    fetchImg(value, this.state.page)
-      .then(res =>
-        this.setState({ allImages: res.hits, page: 1, search: value })
-      )
-      .catch(error => alert(error.massage));
+    setSearch(value);
+    setAllImages([]);
+    setPage(1);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  render() {
-    const { isLoading, allImages } = this.state;
-    const isAllImages = allImages.length;
-    return (
-      <div>
-        <header>
-          <Searchbar onSubmitForm={this.handleSubmit} />
-          <ImageGallery items={this.state.allImages} />
-          {isLoading && <Loader />}
-          {isAllImages && <Button handleButtonClick={this.loadMore} />}
-        </header>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Searchbar onSubmitForm={handleSubmit} />
+      <ImageGallery items={allImages} />
+      {isLoading && <Loader />}
+      {isAllImages && <Button handleButtonClick={handleLoadMore} />}
+    </div>
+  );
+};
